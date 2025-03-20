@@ -1,0 +1,4 @@
+Znachit neka imat nekoj pipeline tuka vo igra,
+taka sho ge imash 2 operandi.
+
+Edniot neka vlechit samo, dodeka drugiot neka transformirat data

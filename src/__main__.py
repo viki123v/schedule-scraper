@@ -2,7 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from .data_processing import process
 
+process()
+exit()
 
 PAGE_URL='https://finki.edupage.org/timetable/'
 driver=webdriver.Chrome()
