@@ -3,11 +3,14 @@ from .validation import ValidTimes,ValidDaysCheck
 from .models import Subject
 from datetime import datetime,time
 
-def get_x_for_subject(sub_text):
-    try:
-        return float(sub_text['x'])
-    except:
-        return float(sub_text.contents[0]['x'])
+def check_tspan_els(text_el):
+    if len(text_el.contents) == 0:
+        return text_el.get_text()
+
+    text_content=""
+    for child in text_el.children:
+        text_content += child.text + ' '
+    return text_content
 
 def parse_time(time_el):
     time_format='%H:%M'
@@ -46,37 +49,42 @@ def extract_dates(text_coll):
 Find the maximum of all the min elements in a scheudle array.
 """
 def binary_search(arr,coord):
-    left=-1
-    right=len(arr)
-    result=None
-    while (right-left)>1:
+    left=0
+    right=len(arr)-1
+    results=None
+    while left<=right:
         mid=(left+right)//2
-        if arr[mid][0]>coord:
+        if arr[mid][0] > coord:
             right=mid-1
         else:
-            result=arr[mid]
+            results=arr[mid]
             left=mid+1
-    return result
+
+    if left<len(arr) and arr[left][0] <= coord:
+        results=arr[left]
+    return results[1]
 
 def extract_subjects(sorted_days, sorted_times, i_start ,text_coll):
-    PROFS_DELIMITER='/'
     subs=[]
+    PROF_DELIMITAR='/'
     for i in range(i_start, len(text_coll),3):
-        sub_name=text_coll[i].get_text()
-        sub_profs=text_coll[i+1].get_text().split(PROFS_DELIMITER)
+        sub_name=check_tspan_els(text_coll[i])
+        sub_profs=check_tspan_els(text_coll[i+1]).split(PROF_DELIMITAR)
         place=text_coll[i+2].get_text()
+        rect=text_coll[i+2].next_sibling
 
-        day=binary_search(sorted_days,get_x_for_subject(text_coll[i]))[1]
-        # time=binary_search(sorted_times,float(text_coll[i]['y']))[1]
+        day=binary_search(sorted_days,float(rect['x']))
+        start_time=binary_search(sorted_times,float(rect['y']))[0]
+        height=float(rect['height'])
+        end_time=binary_search(sorted_times,
+                               float(rect['y'])+height-0.2*height)[1]
 
-        tmp=datetime.now().time()
         subs.append(
             Subject(
-                 sub_name, sub_profs, place, tmp,tmp , day
+                 sub_name, sub_profs, place, start_time,end_time , day
             )
         )
     return subs
-#143.97
 
 def process():
     I_VALIDITY_TEXT=-3

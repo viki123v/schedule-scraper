@@ -9,4 +9,4 @@ class Subject:
         self.date=date_formate(start,end,day)
 
     def __str__(self):
-        return f'{self.name} / {self.date} / {self.place}'
+        return f'{self.name} / {self.date} / {self.place} / '
