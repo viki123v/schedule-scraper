@@ -4,6 +4,7 @@ from .models import Subject
 from datetime import datetime
 from ics import Calendar, Event
 
+
 def check_tspan_els(text_el):
     if len(text_el.contents) == 0:
         return text_el.get_text()
